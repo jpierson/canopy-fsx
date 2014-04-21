@@ -23,17 +23,25 @@ open screenSizes
 open userAgents
 open runner
 
-configuration.chromeDir <- "./"
+try
+    //chromdriver.exe for osx is contained in the this directory
+    //so is the windows version
+    configuration.chromeDir <- "./"
 
-elementTimeout <- 3.0
-compareTimeout <- 3.0
-pageTimeout <- 3.0
-runFailedContextsFirst <- true
-reporter <- new LiveHtmlReporter(Chrome, configuration.chromeDir) :> IReporter 
+    elementTimeout <- 3.0
+    compareTimeout <- 3.0
+    pageTimeout <- 3.0
+    runFailedContextsFirst <- true
+    reporter <- new LiveHtmlReporter(Chrome, configuration.chromeDir) :> IReporter 
 
-failFast := true
+    failFast := true
 
-start chrome
+    start chrome
+with
+    | exn ->
+        printf "Exception was thrown. If the exception is a System.ComponentModel.Win32Exception, it means that you are running canopy-fsx on Windows.\nThere is a file in this directory called 'chromedriver.exe.windows'. Remove the current 'chromedriver.exe' file and rename 'chromedriver.exe.windows' to 'chromedriver.exe' \n\n"
+        reraise()
+
 let mainBrowser = browser
 
 context "context1"
